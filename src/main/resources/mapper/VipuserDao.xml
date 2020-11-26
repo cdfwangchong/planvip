@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdfg.planvip.dao.VipuserDao">
+  <resultMap id="BaseResultMap" type="com.cdfg.planvip.pojo.dto.Vipuser">
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="vip_name" jdbcType="VARCHAR" property="vipName" />
+    <result column="tel_num" jdbcType="VARCHAR" property="telNum" />
+    <result column="vip_type" jdbcType="VARCHAR" property="vipType" />
+    <result column="vip_date" jdbcType="DATE" property="vipDate" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+      <result column="open_id" jdbcType="VARCHAR" property="openId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    card_id, vip_name, tel_num, vip_type, vip_date, creat_time,open_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vipuser
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertSelective" parameterType="java.util.List" useGeneratedKeys="falsh">
+      insert into vipuser(card_id,vip_name,open_id,tel_num,vip_type,vip_date,creat_time)
+      values
+      <foreach collection="list" item="item" index="index" separator="UNION ALL">
+        (#{item.cardId,jdbcType=VARCHAR},
+         #{item.vipName,jdbcType=VARCHAR},
+         #{item.telNum,jdbcType=VARCHAR},
+         #{item.vipType,jdbcType=VARCHAR},
+         now(),
+         now())
+      </foreach>
+      ON DUPLICATE KEY UPDATE
+      vip_date = values(now()),
+      creat_time = values(now())
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="java.util.Map">
+    update vipuser
+    set open_id = #{openId,jdbcType=VARCHAR}
+    where card_id = #{cardId,jdbcType=VARCHAR}
+      and tel_num = #{telNum,jdbcType=VARCHAR}
+  </update>
+
+    <select id="selectByPrimary" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from vipuser
+        where card_id = #{cardId,jdbcType=VARCHAR}
+          and tel_num = #{telNum,jdbcType=VARCHAR}
+          and vip_date <![CDATA[ >= ]]> now()
+    </select>
+</mapper>

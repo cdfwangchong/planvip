@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdfg.planvip.dao.VipquestionDao">
+  <resultMap id="BaseResultMap" type="com.cdfg.planvip.pojo.dto.Vipquestion">
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="tel_num" jdbcType="VARCHAR" property="telNum" />
+    <result column="open_id" jdbcType="VARCHAR" property="open_id" />
+    <result column="qust_knowdbrand" jdbcType="VARCHAR" property="qustKnowdbrand" />
+    <result column="qust_likebrand" jdbcType="VARCHAR" property="qustLikebrand" />
+    <result column="qust_gift" jdbcType="VARCHAR" property="qustGift" />
+    <result column="ques_sendmsg" jdbcType="VARCHAR" property="quesSendmsg" />
+    <result column="qust_vipservice" jdbcType="VARCHAR" property="qustVipservice" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    seqno, card_id, tel_num, qust_knowdbrand, qust_likebrand, qust_gift, ques_sendmsg, 
+    qust_vipservice, creat_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vipquestion
+    where open_id = #{openId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="com.cdfg.planvip.pojo.dto.Vipquestion" useGeneratedKeys="true">
+    insert into vipquestion (card_id, tel_num, qust_knowdbrand, 
+      qust_likebrand, qust_gift, ques_sendmsg, 
+      qust_vipservice, creat_time)
+    values (#{cardId,jdbcType=VARCHAR}, #{telNum,jdbcType=VARCHAR}, #{qustKnowdbrand,jdbcType=VARCHAR}, 
+      #{qustLikebrand,jdbcType=VARCHAR}, #{qustGift,jdbcType=VARCHAR}, #{quesSendmsg,jdbcType=VARCHAR}, 
+      #{qustVipservice,jdbcType=VARCHAR}, now())
+    ON DUPLICATE KEY UPDATE
+    qust_knowdbrand = values(qust_knowdbrand),
+    qust_likebrand = values(qust_likebrand),
+    qust_gift = values(qust_gift),
+    ques_sendmsg = values(ques_sendmsg),
+    qust_vipservice = values(qust_vipservice),
+    creat_time = values(creat_time)
+  </insert>
+
+  <select id="select" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from vipquestion
+      where DATE(creat_time)= #{fsdate,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

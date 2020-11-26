@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cdfg.planvip.dao.ViptimeDao">
+  <resultMap id="BaseResultMap" type="com.cdfg.planvip.pojo.dto.Viptime">
+    <id column="seqno" jdbcType="DECIMAL" property="seqno" />
+    <result column="card_id" jdbcType="VARCHAR" property="cardId" />
+    <result column="vip_name" jdbcType="VARCHAR" property="vipName" />
+    <result column="tel_num" jdbcType="VARCHAR" property="telNum" />
+    <result column="vip_time" jdbcType="DATE" property="vipTime" />
+    <result column="vip_yysd" jdbcType="VARCHAR" property="vipYysd" />
+    <result column="iscancel" jdbcType="CHAR" property="iscancel" />
+    <result column="isupdate" jdbcType="VARCHAR" property="isupdate" />
+    <result column="pre_time" jdbcType="DATE" property="preTime" />
+    <result column="pre_yysd" jdbcType="VARCHAR" property="preYysd" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    seqno, card_id, vip_name, tel_num, vip_time, vip_yysd, iscancel, isupdate, pre_time, 
+    pre_yysd
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from (select
+        <include refid="Base_Column_List" />
+        from viptime
+        where card_id = #{seqno,jdbcType=VARCHAR}
+          and tel_num = #{telNum,jdbcType=VARCHAR}
+        order by vip_time desc)
+    where rownum = 1
+  </select>
+
+  <select id="selectsd" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select
+      count(*)
+    from viptime
+    where vip_time = #{vipTime,jdbcType=Date}
+      and vip_yysd = #{vipYysd,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectrs" parameterType="java.util.Map" resultType="java.lang.Integer">
+    select
+      count(*)
+    from viptime
+    where vip_time = #{vipTime,jdbcType=Date}
+  </select>
+
+  <insert id="insert" keyColumn="seqno" keyProperty="seqno" parameterType="com.cdfg.planvip.pojo.dto.Viptime" useGeneratedKeys="true">
+    insert into viptime (card_id, vip_name, tel_num, 
+      vip_time, vip_yysd, iscancel, 
+      isupdate, pre_time, pre_yysd
+      )
+    values (#{cardId,jdbcType=VARCHAR}, #{vipName,jdbcType=VARCHAR}, #{telNum,jdbcType=VARCHAR}, 
+      #{vipTime,jdbcType=DATE}, #{vipYysd,jdbcType=VARCHAR}, #{iscancel,jdbcType=CHAR}, 
+      #{isupdate,jdbcType=VARCHAR}, #{preTime,jdbcType=DATE}, #{preYysd,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.cdfg.planvip.pojo.dto.Viptime">
+    update viptime
+    set card_id = #{cardId,jdbcType=VARCHAR},
+      vip_name = #{vipName,jdbcType=VARCHAR},
+      tel_num = #{telNum,jdbcType=VARCHAR},
+      vip_time = #{vipTime,jdbcType=DATE},
+      vip_yysd = #{vipYysd,jdbcType=VARCHAR},
+      iscancel = #{iscancel,jdbcType=CHAR},
+      isupdate = #{isupdate,jdbcType=VARCHAR},
+      pre_time = #{preTime,jdbcType=DATE},
+      pre_yysd = #{preYysd,jdbcType=VARCHAR}
+    where seqno = #{seqno,jdbcType=DECIMAL}
+  </update>
+</mapper>
